@@ -26,12 +26,18 @@ test('kupienie produktu przez nowego uzytkownika', async ({ page }) => {
   await page.locator('#order_bill_address_attributes_country_id').selectOption('Poland');
   await page.locator('css=#order_bill_address_attributes_state_id').selectOption('Zachodniopomorskie');
   await page.locator('css=#order_bill_address_attributes_zipcode').fill('70-123');
-  await page.locator('css=#order_bill_address_attributes_phone').fill('512309423');
-  await page.getByText('Order use billing').check();
+  await page.locator('css=#order_bill_address_attributes_phone').fill('123456789');
+  await page.getByText('Order use billing').uncheck();
   // zadanie domowe 5
-
-
-  // end zadanie domowe 5
+  await page.locator('css=#order_ship_address_attributes_firstname').fill('Ludomir');
+  await page.locator('css=#order_ship_address_attributes_lastname').fill('Nowak');
+  await page.locator('css=#order_ship_address_attributes_address1').fill('Zbożowa 4');
+  await page.locator('css=#order_ship_address_attributes_city').fill('Szczecin');
+  await page.locator('css=#order_ship_address_attributes_zipcode').fill('70-123');
+  await page.locator('css=#order_ship_address_attributes_country_id').selectOption('Poland');
+  await page.locator('css=#order_ship_address_attributes_state_id').selectOption('Zachodniopomorskie');
+  await page.locator('css=#order_ship_address_attributes_phone').fill('123456789');
+ // end zadanie domowe 5
   await page.getByRole('button', { name: 'Save and Continue' }).click();
   await page.locator('label').filter({ hasText: 'Express WORLD $' }).locator('span').first().click();
   await page.getByRole('button', { name: 'Save and Continue' }).click();
