@@ -1,3 +1,4 @@
+import { faker, fakerPL } from '@faker-js/faker';
 import { test, expect } from '@playwright/test';
 import { MenuPage } from '../pageObjects/menuPage';
 import { ProductsPage } from '../pageObjects/productsPage';
@@ -17,27 +18,42 @@ test('kupienie produktu przez nowego uzytkownika', async ({ page }) => {
   await page.getByRole('button', { name: 'Add To Cart' }).click();
   await page.getByRole('link', { name: 'Checkout' }).click();
   await page.locator('#order_email').click();
-  await page.locator('#order_email').fill('ludomir@example.com');
-  await page.getByRole('button', { name: 'Continue as a guest' }).click();
-  await page.locator('css=#order_bill_address_attributes_firstname').fill('Ludomir');
-  await page.locator('css=#order_bill_address_attributes_lastname').fill('Nowak');
-  await page.locator('css=#order_bill_address_attributes_address1').fill('Zbożowa 4');
-  await page.locator('css=#order_bill_address_attributes_city').fill('Szczecin');
+
+// zadanie domowe 6
+
+  const name: string = fakerPL.person.firstName();
+  const surename: string = fakerPL.person.lastName();
+  const phone: string = fakerPL.phone.number();
+  
+  await page.locator('#order_email').fill(fakerPL.internet.email());
+  await page.getByRole('button', { name: 'Continue as a guest' }).click();  
+  await page.locator('css=#order_bill_address_attributes_firstname').fill(name);
+  await page.locator('css=#order_bill_address_attributes_lastname').fill(surename);
+  await page.locator('css=#order_bill_address_attributes_address1').fill(fakerPL.location.street() + ' ' + fakerPL.number.int({max: 10}));
+  await page.locator('css=#order_bill_address_attributes_city').fill(fakerPL.location.city());
   await page.locator('#order_bill_address_attributes_country_id').selectOption('Poland');
-  await page.locator('css=#order_bill_address_attributes_state_id').selectOption('Zachodniopomorskie');
-  await page.locator('css=#order_bill_address_attributes_zipcode').fill('70-123');
-  await page.locator('css=#order_bill_address_attributes_phone').fill('123456789');
+
+  // Function to capitalize the first letter 
+  function firstLetterUppercase(inputText: string): string
+  {
+    return inputText[0].toUpperCase() + inputText.substring(1);
+  }
+
+  await page.locator('css=#order_bill_address_attributes_state_id').selectOption(firstLetterUppercase(fakerPL.location.state()));
+  await page.locator('css=#order_bill_address_attributes_zipcode').fill(fakerPL.location.zipCode());
+  await page.locator('css=#order_bill_address_attributes_phone').fill(phone);
   await page.getByText('Order use billing').uncheck();
   // zadanie domowe 5
-  await page.locator('css=#order_ship_address_attributes_firstname').fill('Ludomir');
-  await page.locator('css=#order_ship_address_attributes_lastname').fill('Nowak');
-  await page.locator('css=#order_ship_address_attributes_address1').fill('Zbożowa 4');
-  await page.locator('css=#order_ship_address_attributes_city').fill('Szczecin');
-  await page.locator('css=#order_ship_address_attributes_zipcode').fill('70-123');
-  await page.locator('css=#order_ship_address_attributes_country_id').selectOption('Poland');
-  await page.locator('css=#order_ship_address_attributes_state_id').selectOption('Zachodniopomorskie');
-  await page.locator('css=#order_ship_address_attributes_phone').fill('123456789');
+  await page.locator('css=#order_ship_address_attributes_firstname').fill(name);
+  await page.locator('css=#order_ship_address_attributes_lastname').fill(surename);
+  await page.locator('css=#order_ship_address_attributes_address1').fill(fakerPL.location.street() + ' ' + fakerPL.number.int({max: 10}));
+  await page.locator('css=#order_ship_address_attributes_city').fill(fakerPL.location.city());
+  await page.locator('css=#order_ship_address_attributes_zipcode').fill(fakerPL.location.zipCode());
+  await page.locator('css=#order_ship_address_attributes_country_id').selectOption('Poland');  //faker.location.country();
+  await page.locator('css=#order_ship_address_attributes_state_id').selectOption(firstLetterUppercase(fakerPL.location.state()));
+  await page.locator('css=#order_ship_address_attributes_phone').fill(phone);
  // end zadanie domowe 5
+ // end zadanie domowe 6
   await page.getByRole('button', { name: 'Save and Continue' }).click();
   await page.locator('label').filter({ hasText: 'Express WORLD $' }).locator('span').first().click();
   await page.getByRole('button', { name: 'Save and Continue' }).click();
