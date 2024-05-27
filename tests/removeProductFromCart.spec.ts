@@ -1,9 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { MenuPage } from '../pageObjects/menuPage';
-import { ProductsPage } from '../pageObjects/productsPage';
+import { Ecomm } from '../pageObjects/ecomm';
 
-let menu: MenuPage;
-let product: ProductsPage;
+let ecomm: Ecomm
 
 async function addToCart(page) {
     await page.getByRole('button', { name: 'Add To Cart' }).click();
@@ -19,17 +17,17 @@ async function removeFromCart(page) {
 }
 
 test.beforeEach(async ({ page }) => {
-    menu = new MenuPage(page)
-    product = new ProductsPage(page)
+    ecomm = new Ecomm(page)
     await page.goto('https://spree-multi-vendor-demo.herokuapp.com/');
 })
 
 test('usunięcie produktu z koszyka', async ({ page }) => {
-  await menu.goToMenu('Ambiance Men', 'Men');
-  await product.choseProduct('Denim Shirt Denim Shirt $', 'Denim Shirt', 'L');
+  await ecomm.menu().goToMenu('Ambiance Men', 'Men');
+  await ecomm.products().choseProduct('Denim Shirt Denim Shirt $', 'Denim Shirt', 'L');
   await addToCart(page);
   await viewCart(page);
   await removeFromCart(page);
 });
+
 
 
